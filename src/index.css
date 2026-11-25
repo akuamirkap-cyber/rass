@@ -1,0 +1,358 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: #0a4767;
+  overscroll-behavior: none;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+@keyframes hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.hint-in {
+  animation: hint-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.card-in {
+  animation: card-in 0.38s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+}
+
+@keyframes star-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-25deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.18) rotate(6deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+.star-pop {
+  animation: star-pop 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.2) both;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.menu-in {
+  animation: menu-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* ragdoll archer: the chunky slanted display face of the reference HUD */
+.font-game {
+  font-family: 'Russo One', 'Arial Black', 'Segoe UI Black', 'Helvetica Neue', system-ui, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+
+@layer components {
+  /* ---------- ragdoll archer: game UI kit (chunky panels, ribbons, pressable buttons) ---------- */
+  .g-title {
+    -webkit-text-stroke: 0.1em #04202c;
+    paint-order: stroke fill;
+    text-shadow: 0 0.08em 0 #04202c, 0 0.17em 0 rgba(0, 0, 0, 0.28);
+  }
+  .g-outline {
+    text-shadow: 0 2px 0 #04202c, 0 -2px 0 #04202c, 2px 0 0 #04202c, -2px 0 0 #04202c, 1.5px 1.5px 0 #04202c, -1.5px 1.5px 0 #04202c,
+      1.5px -1.5px 0 #04202c, -1.5px -1.5px 0 #04202c, 0 4px 0 rgba(0, 0, 0, 0.3);
+  }
+  .g-panel {
+    background: linear-gradient(180deg, #134e64 0%, #082937 100%);
+    border: 4px solid #031a24;
+    border-radius: 26px;
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.18), inset 0 -8px 0 rgba(0, 0, 0, 0.24), 0 10px 0 rgba(1, 14, 20, 0.65), 0 28px 54px rgba(0, 0, 0, 0.55);
+  }
+  .g-ribbon {
+    position: absolute;
+    left: 50%;
+    top: -24px;
+    z-index: 2;
+    transform: translateX(-50%);
+    padding: 8px 46px 10px;
+    white-space: nowrap;
+    color: #fff;
+    background: linear-gradient(#ffb53a, #f47a00);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%, 16px 50%);
+    filter: drop-shadow(0 4px 0 #8a3a00);
+  }
+  .g-ribbon.red {
+    background: linear-gradient(#ff6b5e, #c81e1e);
+    filter: drop-shadow(0 4px 0 #690c0c);
+  }
+  .g-ribbon.blue {
+    background: linear-gradient(#5db4ff, #2a78d8);
+    filter: drop-shadow(0 4px 0 #123f7a);
+  }
+  .g-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border: 3px solid #031a24;
+    border-radius: 18px;
+    color: #fff;
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35), inset 0 -5px 0 rgba(0, 0, 0, 0.18), 0 6px 0 #031a24;
+    transition: transform 0.08s cubic-bezier(0.2, 0.9, 0.3, 1.2), box-shadow 0.08s, filter 0.15s;
+    touch-action: manipulation;
+  }
+  .g-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+  .g-btn:active {
+    transform: translateY(5px);
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.18), 0 1px 0 #031a24;
+  }
+  .g-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .g-btn:disabled { filter: grayscale(0.85) brightness(0.72); }
+  .g-orange { background: linear-gradient(180deg, #ffbe42 0%, #f07600 100%); }
+  .g-green { background: linear-gradient(180deg, #86e85f 0%, #2b9e37 100%); }
+  .g-red { background: linear-gradient(180deg, #ff6b5e 0%, #ce2626 100%); }
+  .g-chip { background: rgba(0, 14, 22, 0.62); border-radius: 999px; box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.38); }
+
+  /* ---------- Core UI Animations ---------- */
+  @keyframes g-pop {
+    0% { opacity: 0; transform: scale(0.72) translateY(28px); }
+    65% { opacity: 1; transform: scale(1.04) translateY(-2px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .g-pop { animation: g-pop 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+
+  @keyframes g-float {
+    0%, 100% { transform: translateY(0) rotate(-1.1deg); }
+    50% { transform: translateY(-8px) rotate(1.1deg); }
+  }
+  .g-float { animation: g-float 4.6s ease-in-out infinite; }
+
+  @keyframes g-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.045); }
+  }
+  .g-pulse { animation: g-pulse 1.5s ease-in-out infinite; }
+
+  @keyframes g-drag {
+    0% { transform: translate(0, 0); opacity: 0; }
+    15% { opacity: 1; }
+    70% { transform: translate(-54px, 18px); opacity: 1; }
+    100% { transform: translate(-54px, 18px); opacity: 0; }
+  }
+  .g-drag { animation: g-drag 1.5s ease-in-out infinite; }
+
+  @keyframes g-drop {
+    from { opacity: 0; transform: translateY(-32px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .g-drop { animation: g-drop 0.48s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  /* ---------- 1. Initial App / Title Choreographed Entrance ---------- */
+  @keyframes g-intro-veil {
+    0% { opacity: 1; transform: scale(1.06); }
+    100% { opacity: 0; transform: scale(1); pointer-events: none; }
+  }
+  .g-intro-veil {
+    animation: g-intro-veil 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes g-logo-enter {
+    0% { opacity: 0; transform: translateY(-36px) scale(0.78) rotate(-3deg); filter: blur(4px); }
+    68% { opacity: 1; transform: translateY(4px) scale(1.04) rotate(0.5deg); filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); filter: blur(0); }
+  }
+  .g-logo-enter {
+    animation: g-logo-enter 0.62s 0.06s cubic-bezier(0.2, 0.95, 0.3, 1.2) both;
+  }
+
+  @keyframes g-arrow-streak {
+    0% { opacity: 0; transform: translate(-85%, -50%) rotate(-3deg) scaleX(0.5); }
+    65% { opacity: 1; transform: translate(-48%, -50%) rotate(-3deg) scaleX(1.04); }
+    100% { opacity: 1; transform: translate(-50%, -50%) rotate(-3deg) scaleX(1); }
+  }
+  .g-arrow-streak {
+    animation: g-arrow-streak 0.55s 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes g-cta-enter {
+    0% { opacity: 0; transform: translateY(22px) scale(0.84); }
+    70% { opacity: 1; transform: translateY(-3px) scale(1.03); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .g-cta-enter {
+    animation: g-cta-enter 0.52s 0.16s cubic-bezier(0.2, 0.95, 0.3, 1.22) both;
+  }
+
+  @keyframes g-dock-enter {
+    0% { opacity: 0; transform: translateY(26px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .g-dock-enter {
+    animation: g-dock-enter 0.5s 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Shimmering sheen across the primary MAIN button */
+  @keyframes g-sheen {
+    0%, 55% { transform: translateX(-140%) skewX(-22deg); }
+    100% { transform: translateX(240%) skewX(-22deg); }
+  }
+  .g-sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+    transform: translateX(-140%) skewX(-22deg);
+    animation: g-sheen 3.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ---------- 2. Launch / Transition Wipe When Clicking MAIN or Exiting ---------- */
+  @keyframes g-title-exit-up {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-42px) scale(1.06); }
+  }
+  .g-title-exit-up {
+    animation: g-title-exit-up 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  @keyframes g-dock-exit-down {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(38px) scale(0.94); }
+  }
+  .g-dock-exit-down {
+    animation: g-dock-exit-down 0.26s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  @keyframes g-shutter-top {
+    0% { transform: translateY(-105%); }
+    42%, 58% { transform: translateY(0%); }
+    100% { transform: translateY(-105%); }
+  }
+  @keyframes g-shutter-bot {
+    0% { transform: translateY(105%); }
+    42%, 58% { transform: translateY(0%); }
+    100% { transform: translateY(105%); }
+  }
+  @keyframes g-shutter-badge {
+    0% { opacity: 0; transform: scale(0.55) rotate(-8deg); }
+    36%, 62% { opacity: 1; transform: scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: scale(1.18) rotate(4deg); }
+  }
+  .g-shutter-top {
+    animation: g-shutter-top 0.68s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .g-shutter-bot {
+    animation: g-shutter-bot 0.68s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .g-shutter-badge {
+    animation: g-shutter-badge 0.68s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* ---------- 3. In-Game HUD Smooth Entrance ---------- */
+  @keyframes g-hud-top-in {
+    from { opacity: 0; transform: translateY(-22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .g-hud-top-in {
+    animation: g-hud-top-in 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* ---------- 4. Dying Cinematic Slow-Mo & Game Over Choreography ---------- */
+  @keyframes g-letterbox-in-top {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes g-letterbox-in-bot {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .g-letterbox-top {
+    animation: g-letterbox-in-top 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .g-letterbox-bot {
+    animation: g-letterbox-in-bot 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes g-ko-banner {
+    0% { opacity: 0; transform: scale(1.45) skewX(-10deg); letter-spacing: 0.24em; }
+    24% { opacity: 1; transform: scale(1) skewX(-6deg); letter-spacing: 0.06em; }
+    82% { opacity: 1; transform: scale(1.03) skewX(-6deg); }
+    100% { opacity: 0; transform: scale(0.94) translateY(-10px) skewX(-6deg); }
+  }
+  .g-ko-banner {
+    animation: g-ko-banner 1.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes g-dead-backdrop {
+    from { opacity: 0; backdrop-filter: blur(0px); }
+    to { opacity: 1; backdrop-filter: blur(5px); }
+  }
+  .g-dead-backdrop {
+    animation: g-dead-backdrop 0.42s ease-out both;
+  }
+
+  /* Quick iris flash when retrying from Game Over */
+  @keyframes g-quick-flash {
+    0% { opacity: 0; }
+    35% { opacity: 0.85; }
+    100% { opacity: 0; pointer-events: none; }
+  }
+  .g-quick-flash {
+    animation: g-quick-flash 0.38s ease-out forwards;
+  }
+
+  /* the purse reacts to every coin that lands in it */
+  @keyframes g-bump {
+    0% { transform: scale(1.5); color: #ffe27a; }
+    100% { transform: scale(1); }
+  }
+  .g-bump { animation: g-bump 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; transform-origin: left center; }
+  @keyframes g-bump-icon {
+    0% { transform: scale(1.3) rotate(-10deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .g-bump-icon { animation: g-bump-icon 0.24s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hint-in, .card-in, .star-pop, .menu-in,
+    .g-float, .g-pulse, .g-drag, .g-sheen::after {
+      animation: none;
+    }
+  }
+}
